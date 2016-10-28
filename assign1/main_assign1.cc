@@ -9,11 +9,16 @@
 
 using namespace std;
 
+//==================== PROTOTYPES ========================//
+
 int countCols(ifstream&);
 int countRows(ifstream&);
 bool dataIsInteger(ifstream&);
 void backToBeginning(ifstream&);
 
+//===================== TEMPLATES ========================//
+
+// QUESTION ---
 /* template <class type> void printVect(ifstream &filename,int dim) {
   type x;
   type y;
@@ -29,20 +34,26 @@ void backToBeginning(ifstream&);
   }
   } */ // WHY DOESN'T THIS WORK?
 
+// Gets absolute value of generic type and length of vector:
 template <class type> type absVal(type x, type y, type z=0) {
   return sqrt(x*x+y*y+z*z); // this isn't overloaded but makes more sense to me...
 }
 
+// overloaded temps to write with proper settings to file:
+// (strictly not needing templates but I'm too lazy to move them)
+// 2D:
 template <class type> void writeToFile(type A, type B, type C, ofstream &outstream) {
   string str="  ";
-  outstream << A << str <<  B << str << setprecision(2) << C << endl; 
+  outstream << A << str <<  B << str << C << endl; 
 }
 
+// 3D:
 template <class type> void writeToFile(type A, type B, type C, type D, ofstream &outstream) {
   string str="  ";
-  outstream << A  << str << B  << str << C  << str << setprecision(2) << D << endl;
+  outstream << A  << str << B  << str << C  << str << D << endl;
 }
 
+// string:
 template <class type> void writeToFile(type A, ofstream &outstream) {
   outstream << A << endl;
 }
@@ -54,21 +65,8 @@ main() {
   //Prompt the user for input file so you can pick which case to do:
   string filename;
   
-  cout << "File to read? \n";
-  cin >> filename ; // Pass this as ./main<<nameoffile.txt
-  //filename="input3D_int.txt";
-  cout << "Looking for " << filename << endl;
-  cout << "How many lines of the file do you want to read? \n";
-
-  int usernumber;
-  cin >> usernumber;
-  if (usernumber>0) {
-    cout << "Extracting "<< usernumber << " lines." <<endl;
-  }
-  else {  
-    cout << "Please enter a number that makes sense next time. \n";
-    exit (1);
-  }
+  cout << "Full name of file to read: \n";
+  cin >> filename;
   
   // create the name of the output file for later:
   string outfile;
@@ -94,22 +92,35 @@ main() {
     exit(1);
   }
   else {
+    cout << "Found! \n";
+
+    // Asks for number of lines to read:
+    cout << "How many lines of the file do you want to read? \n";
+
+    // Break if the number of lines is 0 or negative:
+    int usernumber;
+    cin >> usernumber;
+    if (usernumber>0) {
+      cout << "Attempting to extract "<< usernumber << " lines." <<endl;
+    }
+    else {  
+      cout << "Please enter a number that makes sense next time. \n";
+      exit (1);
+    }
     
-    // Reading whole file
+    // Line counter:
     int lin=0;
 
-    // this counts the columns of first line only for brevity, so we're assuming const number
+    // These get a bunch of info (see fns):
     int cols=countCols(myInput);
-    backToBeginning(myInput);
-    int rows=countRows(myInput);
     backToBeginning(myInput);
     bool isInteger=dataIsInteger(myInput);
     backToBeginning(myInput);
     
-    //string currentLine;
-    //for (int i=1; i<=rows; i++)
+    // Run to end of file unless it breaks:
     while ( !myInput.eof() )  {
-      
+
+      // Definitions, woo!
       float x;
       float y;
       float z=0;
@@ -120,21 +131,27 @@ main() {
       // This runs appropriately for any data type and size.
       // Running for integers:
       if ( isInteger ) {
+	
+	// 2D vector:
 	if (cols==2) {
 	  myInput >> xi >> yi;
 	  if ( !myInput.eof() ) {
-	    cout << "Components of " << cols << "D vector are " << xi << " and " << yi << endl;
-	    cout << "Absolute value: " << absVal(xi,yi) << endl;
+	    // Writing to console if needed:
+	    /*cout << "Components of " << cols << "D vector are " << xi << " and " << yi << endl;
+	      cout << "Absolute value: " << absVal(xi,yi) << endl;*/
 	    writeToFile(xi, yi, absVal(xi,yi), myOutput);
 	    lin++;
 	  }
 	}
+	
+	// 3D vector:
 	else if (cols==3) {
 	  myInput >> xi >> yi >> zi;
 	  if ( !myInput.eof() ) {
-	    cout << "Components of " << cols << "D vector are " << xi << ", " << yi <<
+	    // Writing to console if needed:
+	    /*cout << "Components of " << cols << "D vector are " << xi << ", " << yi <<
 	      " and " << zi << endl;
-	    cout << "Absolute value: " << absVal(xi,yi,zi) << endl;
+	      cout << "Absolute value: " << absVal(xi,yi,zi) << endl;*/
 	    writeToFile(xi, yi, zi, absVal(xi,yi, zi), myOutput);
 	    lin++;
 	  } 
@@ -143,12 +160,17 @@ main() {
       
       // Running for non-integers:
       else {
+	
+	// 2D vector:
 	if (cols==2) {
 	  myInput >> x >> y;
 	  if ( !myInput.eof() ) {
-	    cout << "Components of " << cols << "D vector are " << x << " and " << y << endl;
-	    cout << "Absolute value: " << absVal<float>(x,y) << endl;
 
+	    // Printing to console if you need it:
+	    //cout << "Components of " << cols << "D vector are " << x << " and " << y << endl;
+	    //cout << "Absolute value: " << absVal<float>(x,y) << endl;
+
+	    // Making stream all proper like
 	    ostringstream str;
 	    str << left << setprecision(1) << fixed << x << "  " << y << "  "
 	        << absVal<float>(x,y,z) ;
@@ -159,13 +181,18 @@ main() {
 	    if (lin >= usernumber) break;
 	  }
 	}
+	
+	// 3D vector:
        	else if (cols==3) {
 	  myInput >> x >> y >> z;
 	  if ( !myInput.eof() ) {
-	    cout << "Components of " << cols << "D vector are " << x << ", " << y <<
-	      " and " << z << endl;
-	    cout << "Absolute value: " << absVal<float>(x,y,z) << endl;
-	    
+
+	    // Printing to console if you need it:
+	    /* cout << "Components of " << cols << "D vector are " << x << ", " << y <<
+	       " and " << z << endl;
+	       cout << "Absolute value: " << absVal<float>(x,y,z) << endl; */
+
+	    // Making stream all proper like
 	    ostringstream str;
 	    str << left << setprecision(1) << fixed << x << "  " << y << "  " << z << "  "
 	        << absVal<float>(x,y,z) ;
@@ -176,9 +203,9 @@ main() {
 	    if (lin >= usernumber) break;
 	  }
 	}
-      } // esle
+      } 
       
-    } // for loop closed
+    }
     cout << lin << " lines read. \n";
     
   } // if loop close
@@ -190,6 +217,8 @@ main() {
 
 //===========================================================//
 
+// Counts the columns in the file (well really first line of file
+// but who uses varying number of cols)
 int countCols(ifstream &filename) {
   int cols=0;
   int n;
@@ -213,7 +242,8 @@ int countCols(ifstream &filename) {
   
 }
 
-int countRows(ifstream &mystream) {
+// Don't need this anymore
+/*int countRows(ifstream &mystream) {
   int rows=0;
   int n;
  
@@ -221,8 +251,9 @@ int countRows(ifstream &mystream) {
 	     istreambuf_iterator<char>(), '\n');
   cout << rows << " rows in file. \n";
   return rows;
-}
+  }*/
 
+// Looks for dots in your numbers, makes assumptions accordingly.
 bool dataIsInteger(ifstream &mystream) {
   string DUMMY;
   
@@ -238,22 +269,7 @@ bool dataIsInteger(ifstream &mystream) {
     
 }
 
-/* char sigFig(float f, int d)
-{
-  float dummy;
-  for ( int i=1;i<=d; i++) {
-    dummy=dummy*10;
-    }
-  cout <<  f <<
-
-    
-  round(f*10)
-    
-    char buf[16];
-    sprintf(buf, "%.*g", d, f);
-    return buf;
-    } */
-
+// Calling this backToSquareOne next time.
 void backToBeginning(ifstream &mystream) {
   mystream.clear();
   mystream.seekg(0, mystream.beg);    
