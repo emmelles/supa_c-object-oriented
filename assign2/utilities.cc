@@ -6,7 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
-#include "utilities.h"
+#include "utilities.h" //tidy these up
 
 // These are a bunch of bits of code that can be useful at any point.
 
