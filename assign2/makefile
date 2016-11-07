@@ -7,7 +7,7 @@ PROGRAMS=main
 all: $(PROGRAMS)
 	@echo "DONE"
 
-main=utilities.o main.o
+main=planetinfo.o main.o
 main: $(main)
 	$(CXX) -o $(main) 
 
