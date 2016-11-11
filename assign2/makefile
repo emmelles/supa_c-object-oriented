@@ -1,5 +1,5 @@
-# Don't really need flags
-
+CFLAGS= -Wall -g
+LFLAGS= -Wall -g
 CXX=g++
 
 PROGRAMS=main 
@@ -7,12 +7,18 @@ PROGRAMS=main
 all: $(PROGRAMS)
 	@echo "DONE"
 
-main=planetinfo.o main.o
-main: $(main)
-	$(CXX) -o $(main) 
+obj=planetinfo.o main-using-class.o
+main: $(obj)
+	$(CXX) $(LFLAGS) $(obj) -o main
 
-%.o: %.cc %.h
-	$(CXX) -c $<
+planetinfo.o: planetinfo.cc planetinfo.h
+	$(CXX) $(CFLAGS) -c planetinfo.cc	
+
+main-using-class.o: main-using-class.cc planetinfo.h
+	$(CXX) $(CFLAGS) -c main-using-class.cc
+
+#%.o: %.cc %.h
+#	$(CXX) $(CFLAGS) -c $<
 
 clean:
 	rm -f *.o *.mod $(PROGRAMS)
