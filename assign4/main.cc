@@ -257,7 +257,7 @@ double ax(Planet fromPlanet, Planet onPlanet) {
   
   double radius=sqrt((onPlanet.x()-fromPlanet.x()) * (onPlanet.x()-fromPlanet.x()) +
 		     (onPlanet.y()-fromPlanet.y()) * (onPlanet.y()-fromPlanet.y()));
-  double xdir=(onPlanet.x()-fromPlanet.x());
+  double xdir=-(onPlanet.x()-fromPlanet.x());
   double accel=-G * fromPlanet.mass()*xdir/(radius*radius*radius);
   
   return accel;
@@ -268,7 +268,7 @@ double ay(Planet fromPlanet, Planet onPlanet) {
 
   double radius=sqrt((onPlanet.x()-fromPlanet.x()) * (onPlanet.x()-fromPlanet.x()) +
                      (onPlanet.y()-fromPlanet.y()) * (onPlanet.y()-fromPlanet.y()));
-  double ydir=(onPlanet.y()-fromPlanet.y());
+  double ydir=-(onPlanet.y()-fromPlanet.y());
   double accel=-G * fromPlanet.mass()*ydir/(radius*radius*radius);
 
   return accel;
