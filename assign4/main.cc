@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <cmath>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -29,6 +30,11 @@ Input findName(typename vector<Input>::iterator first,typename vector<Input>::it
 }
 
 void evolveSystem(double, vector<Planet>&,int);
+double ax(Planet, Planet);
+double ay(Planet, Planet);
+
+const int noOfObjects=10;
+int noOfEffObjects;
 
 ofstream myOutput1;
 ofstream myOutput2;
@@ -109,7 +115,6 @@ int main() {
   ofstream myOutput10;*/ 
 
   int whichModel=0;
-  int noOfEffObjects=0;
   vector<Planet> system(noOfObjects);
   // Get (valid) input:
   while ( whichModel<1 || whichModel>2) {
@@ -197,63 +202,74 @@ void evolveSystem(double dt, vector<Planet> &data, int step) {
 
   cout << "Running " << step << "step of evo" << endl;
 
-  for (int currentPlanet=0; currentPlanet<=noOfObjects-1; currentPlanet++) {
+  for (int currentPlanet=0; currentPlanet<=noOfEffObjects-1; currentPlanet++) {
 
     // instatiate the total accelerations on currentPlanet;                                                                                                                              
     double axTot=0;
     double ayTot=0;
 
     // This sums all the other planet's accelerations on the current (calls accel functions from Planet class)                                                                           
-    for (int j=currentPlanet+1; (j-currentPlanet)<=(noOfObjects-1); j++) {
-      axTot+=current[j%noOfObjects].ax();
-      ayTot+=current[j%noOfObjects].ay();
+    for (int j=currentPlanet+1; (j-currentPlanet)<=(noOfEffObjects-1); j++) {
+      axTot+=ax(current[j%noOfEffObjects],current[currentPlanet]);
+      ayTot+=ay(current[j%noOfEffObjects],current[currentPlanet]);
     }
-
+    
     // pull current x,y,vx,vy;                                                                                                                                                           
     double currentX=current[currentPlanet].x();
     double currentY=current[currentPlanet].y();
     double currentVx=current[currentPlanet].vx();
     double currentVy=current[currentPlanet].vy();
-
+    
     // time-evolving coords and vs of current planet:                                                                                                                                    
-    double nextX=currentX*dt+1/2*axTot*dt*dt;
-    double nextY=currentY*dt+1/2*ayTot*dt*dt;
-    double nextVx=currentVx+axTot*dt;
-    double nextVy=currentVy+ayTot*dt;
-
+    double nextX= currentX + currentVx * dt + 1/2 * axTot * dt * dt;
+    double nextY= currentY + currentVy * dt + 1/2 * ayTot * dt * dt;
+    double nextVx= currentVx + axTot * dt;
+    double nextVy= currentVy + ayTot * dt;
+    
     // update vector entry with these:                                                                                                                                                   
     next[currentPlanet].setAllVars(nextX, nextY, nextVx, nextVy);
+    
+    ostringstream str;
+    str << step << "    " << ((step-1)*dt)/(24*60*60) <<"    " << scientific << next[currentPlanet].x() <<
+      "    " << next[currentPlanet].y();
 
-    /*ostringstream str;
-    str << step << "    " << (step-1)*dt <<"    " << scientific << next[currentPlanet].x() <<
-      "    " << next[currentPlanet].y() <<endl;
+    if (currentPlanet==0) writeToFile(str.str(), myOutput1);
+    if (currentPlanet==1) writeToFile(str.str(), myOutput2); 
+    if (currentPlanet==2) writeToFile(str.str(), myOutput3);
+    if (currentPlanet==3) writeToFile(str.str(), myOutput4);
+    if (currentPlanet==4) writeToFile(str.str(), myOutput5);
+    if (currentPlanet==5) writeToFile(str.str(), myOutput6);
+    if (currentPlanet==6) writeToFile(str.str(), myOutput7);
+    if (currentPlanet==7) writeToFile(str.str(), myOutput8);
+    if (currentPlanet==8) writeToFile(str.str(), myOutput9);
+    if (currentPlanet==9) writeToFile(str.str(), myOutput10);
 
-    switch(currentPlanet) {
-    case 0:
-      writeToFile(str.str(), myOutput1);
-    case 1:
-      writeToFile(str.str(), myOutput2);
-    case 2:
-      writeToFile(str.str(), myOutput3);
-    case 3:
-      writeToFile(str.str(), myOutput4);
-    case 4:
-      writeToFile(str.str(), myOutput5);
-    case 5:
-      writeToFile(str.str(), myOutput6);
-    case 6:
-      writeToFile(str.str(), myOutput7);
-    case 7:
-      writeToFile(str.str(), myOutput8);
-    case 8:
-      writeToFile(str.str(), myOutput9);
-    case 9:
-      writeToFile(str.str(), myOutput10);
-    }
-
-    str.str("");*/
+    str.str("");
   }
   // now update the original input vector with the new vector                                                                                                                            
   data=next;
 
+}
+
+
+double ax(Planet fromPlanet, Planet onPlanet) {
+  const double G=6.674e-11;
+  
+  double radius=sqrt((onPlanet.x()-fromPlanet.x()) * (onPlanet.x()-fromPlanet.x()) +
+		     (onPlanet.y()-fromPlanet.y()) * (onPlanet.y()-fromPlanet.y()));
+  double xdir=(onPlanet.x()-fromPlanet.x());
+  double accel=-G * fromPlanet.mass()*xdir/(radius*radius*radius);
+  
+  return accel;
+}
+
+double ay(Planet fromPlanet, Planet onPlanet) {
+  const double G=6.674e-11;
+
+  double radius=sqrt((onPlanet.x()-fromPlanet.x()) * (onPlanet.x()-fromPlanet.x()) +
+                     (onPlanet.y()-fromPlanet.y()) * (onPlanet.y()-fromPlanet.y()));
+  double ydir=(onPlanet.y()-fromPlanet.y());
+  double accel=-G * fromPlanet.mass()*ydir/(radius*radius*radius);
+
+  return accel;
 }

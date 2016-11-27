@@ -5,8 +5,6 @@
 #include <vector>
 
 using namespace std;
-const double G=6.674e-11;
-const int noOfObjects=10;
 
 class Planet {
 
@@ -32,10 +30,6 @@ class Planet {
   void setCoords(double x, double y);
   void setVs(double vx, double vy);
   void setAllVars(double x, double y, double vx, double vy);
-
-  // build accelerations due to Planet:
-  double ax();
-  double ay();
 
   // build an appropriate filename with planet name:
   string outFilename();

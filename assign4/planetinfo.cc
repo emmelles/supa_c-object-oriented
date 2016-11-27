@@ -36,19 +36,6 @@ Planet::Planet(string name, double mass, double x,
   m_vy=vy;
 }
 
-// build accelerations due to Planet:
-double Planet::ax() {
-  double r=sqrt(m_x*m_x+m_y*m_y);
-  double accel=-G*m_mass*m_x/(r*r*r);
-  return accel;
-}
-
-double Planet::ay() {
-  double r=m_x*m_x+m_y*m_y;
-  double accel=-G*m_mass*m_y/(r*r*r);
-  return accel;
-}
-
 string Planet:: outFilename() {
   string dummy="output_"+m_name+".txt";
   return dummy;
