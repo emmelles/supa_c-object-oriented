@@ -49,6 +49,11 @@ double Planet::ay() {
   return accel;
 }
 
+string Planet:: outFilename() {
+  string dummy="output_"+m_name+".txt";
+  return dummy;
+}
+
 string Planet::name() {return m_name;}
 double Planet::mass() {return m_mass;}
 double Planet::x() {return m_x;}
@@ -71,7 +76,7 @@ void Planet::setAllVars(double x, double y, double vx, double vy) {
   m_vy=vy;
 }
 
-SolarSystem:: SolarSystem()
+/*SolarSystem:: SolarSystem()
 {
   Planet m_Sun;
   Planet m_Earth;
@@ -104,4 +109,4 @@ void SolarSystem::setPlanets( vector<Planet> data) {
 
   vector<Planet>::iterator whereMoon = findName<vector<Planet>::iterator,Planet,string>(data.begin(), data.end(), "Moon");
   Planet m_Moon=*whereMoon;
-}
+  }*/

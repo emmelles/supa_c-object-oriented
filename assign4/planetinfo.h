@@ -6,6 +6,7 @@
 
 using namespace std;
 const double G=6.674e-11;
+const int noOfObjects=10;
 
 class Planet {
 
@@ -36,6 +37,9 @@ class Planet {
   double ax();
   double ay();
 
+  // build an appropriate filename with planet name:
+  string outFilename();
+
  private:
   
   string m_name;
@@ -46,25 +50,5 @@ class Planet {
   double m_vy;
   
 };
-
-class SolarSystem {
-
- public:
-  SolarSystem();
-  SolarSystem(vector<Planet> data);
-
-  // setter:
-  void setPlanets( vector<Planet> data);
-  // getters:
-  Planet Earth();
-  Planet Sun();
-  Planet Moon();
-  
- private:
-  Planet m_Sun;
-  Planet m_Earth;
-  Planet m_Moon;
-  
-  };
 
 #endif
