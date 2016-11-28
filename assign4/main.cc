@@ -9,7 +9,6 @@
 #include <algorithm>
 #include "planetinfo.h"
 #include "utilities.h"
-#include "evolution.h"
 
 using namespace std; 
 
