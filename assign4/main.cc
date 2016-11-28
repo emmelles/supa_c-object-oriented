@@ -32,6 +32,7 @@ Input findName(typename vector<Input>::iterator first,typename vector<Input>::it
 void evolveSystem(double, vector<Planet>&,int);
 double ax(Planet, Planet);
 double ay(Planet, Planet);
+void writeToRightOutput(int, string);
 
 const int noOfObjects=10;
 int noOfEffObjects;
@@ -67,7 +68,7 @@ int main() {
   int tTot=totTimeDays*24*60*60;
   
   cout << "\nTime step? [days]" << endl;
-  int timestepDays;
+  double timestepDays;
   cin >> timestepDays;
   //convert to sec:                                                                                                
   int dt=timestepDays*24*60*60;
@@ -102,17 +103,6 @@ int main() {
   // Which bodies are we gonna model?
   
   //vector<ofstream> outputs(noOfObjects); // SEE QUESTION BELOW
-
-  /*ofstream myOutput1;
-  ofstream myOutput2;
-  ofstream myOutput3;
-  ofstream myOutput4;
-  ofstream myOutput5;
-  ofstream myOutput6;
-  ofstream myOutput7;
-  ofstream myOutput8;
-  ofstream myOutput9;
-  ofstream myOutput10;*/ 
 
   int whichModel=0;
   vector<Planet> system(noOfObjects);
@@ -176,33 +166,45 @@ int main() {
     }*/
   // QUESTION: I played aroung with using a loop to define and open ofstreams efficiently
   // and not closing them each time, but could not find a nice way to write to a specific one.
-  // Things I tried: pointers etc, fout, various string defn
+  // Things I tried: pointers etc, fout, various string defn, vector of ofstream
+
+
+
+  // Write headers:
+  string headers="#  days      X[m]           Y [m]";
+  for (int i=0;i<noOfEffObjects;i++) writeToRightOutput(i,headers);
 
   //do the time evolution:  
   int step=0;
-  for (int t=0;t<=tTot;t+=dt) { // +1 due to definition of print in evol, fix maybe
+  for (int t=0;t<=tTot;t+=dt) {
     step++;
     evolveSystem(dt,system,step);
   }
   
-  cout << "Done" << endl;
+  cout << "Done." << endl;
 
-  /* Testing findName
-  Planet palebluedot=findName<Planet, string>(data.begin(),data.end(),"Earth");
-  cout << palebluedot.name() << endl; */
-
- 
 }
 
 ///////////////////////////////////////
 
+// This writes to ofstreams initialised in main so kept it here,
+// might look into moving it to evolution.cc/h
 void evolveSystem(double dt, vector<Planet> &data, int step) {
   vector<Planet> current=data;
   vector<Planet> next=current;
 
-  cout << "Running " << step << "step of evo" << endl;
+  cout << "Running step no. " << step << " of time evolution..."<< endl;
 
   for (int currentPlanet=0; currentPlanet<=noOfEffObjects-1; currentPlanet++) {
+
+    // For the first entry print the unevolved coordinates too:
+    if (step==1) {
+      ostringstream str0;
+      str0 << step-1 << "    " << step-1 <<"    " << scientific << next[currentPlanet].x() <<
+      "    " << next[currentPlanet].y(); 
+      str0.str("");
+      str0.clear();
+    }
 
     // instatiate the total accelerations on currentPlanet;                                                                                                                              
     double axTot=0;
@@ -230,21 +232,12 @@ void evolveSystem(double dt, vector<Planet> &data, int step) {
     next[currentPlanet].setAllVars(nextX, nextY, nextVx, nextVy);
     
     ostringstream str;
-    str << step << "    " << ((step-1)*dt)/(24*60*60) <<"    " << scientific << next[currentPlanet].x() <<
+    str << step << "    " << (step*dt)/(24*60*60) <<"    " << scientific << next[currentPlanet].x() <<
       "    " << next[currentPlanet].y();
 
-    if (currentPlanet==0) writeToFile(str.str(), myOutput1);
-    if (currentPlanet==1) writeToFile(str.str(), myOutput2); 
-    if (currentPlanet==2) writeToFile(str.str(), myOutput3);
-    if (currentPlanet==3) writeToFile(str.str(), myOutput4);
-    if (currentPlanet==4) writeToFile(str.str(), myOutput5);
-    if (currentPlanet==5) writeToFile(str.str(), myOutput6);
-    if (currentPlanet==6) writeToFile(str.str(), myOutput7);
-    if (currentPlanet==7) writeToFile(str.str(), myOutput8);
-    if (currentPlanet==8) writeToFile(str.str(), myOutput9);
-    if (currentPlanet==9) writeToFile(str.str(), myOutput10);
-
+    writeToRightOutput(currentPlanet,str.str());
     str.str("");
+    str.clear();
   }
   // now update the original input vector with the new vector                                                                                                                            
   data=next;
@@ -257,7 +250,7 @@ double ax(Planet fromPlanet, Planet onPlanet) {
   
   double radius=sqrt((onPlanet.x()-fromPlanet.x()) * (onPlanet.x()-fromPlanet.x()) +
 		     (onPlanet.y()-fromPlanet.y()) * (onPlanet.y()-fromPlanet.y()));
-  double xdir=-(onPlanet.x()-fromPlanet.x());
+  double xdir=(onPlanet.x()-fromPlanet.x());
   double accel=-G * fromPlanet.mass()*xdir/(radius*radius*radius);
   
   return accel;
@@ -268,8 +261,21 @@ double ay(Planet fromPlanet, Planet onPlanet) {
 
   double radius=sqrt((onPlanet.x()-fromPlanet.x()) * (onPlanet.x()-fromPlanet.x()) +
                      (onPlanet.y()-fromPlanet.y()) * (onPlanet.y()-fromPlanet.y()));
-  double ydir=-(onPlanet.y()-fromPlanet.y());
+  double ydir=(onPlanet.y()-fromPlanet.y());
   double accel=-G * fromPlanet.mass()*ydir/(radius*radius*radius);
 
   return accel;
 }
+
+void writeToRightOutput(int currentPlanet, string str) {
+  if (currentPlanet==0) writeToFile(str, myOutput1);
+  if (currentPlanet==1) writeToFile(str, myOutput2);
+  if (currentPlanet==2) writeToFile(str, myOutput3);
+  if (currentPlanet==3) writeToFile(str, myOutput4);
+  if (currentPlanet==4) writeToFile(str, myOutput5);
+  if (currentPlanet==5) writeToFile(str, myOutput6);
+  if (currentPlanet==6) writeToFile(str, myOutput7);
+  if (currentPlanet==7) writeToFile(str, myOutput8);
+  if (currentPlanet==8) writeToFile(str, myOutput9);
+  if (currentPlanet==9) writeToFile(str, myOutput10);
+} 

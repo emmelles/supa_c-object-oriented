@@ -17,10 +17,7 @@ utilities.o: utilities.cc utilities.h
 planetinfo.o: planetinfo.cc planetinfo.h
 	$(CXX) $(CFLAGS) -c planetinfo.cc	
 
-#evolution.o: evolution.cc evolution.h planetinfo.h utilities.h
-#	$(CXX) $(CFLAGS) -c evolution.cc 
-
-main.o: main.cc utilities.h planetinfo.h #evolution.h 
+main.o: main.cc utilities.h planetinfo.h  
 	$(CXX) $(CFLAGS) -c main.cc
 
 #%.o: %.cc %.h
