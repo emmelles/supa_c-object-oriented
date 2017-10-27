@@ -1,0 +1,55 @@
+The final assignment is to model the evolution of the Solar System in two dimensions. 
+
+The inputs are the celestial bodies each described by name, mass, x position, y position, x velocity and y velocity. 
+
+The inputs can come from a text file that is read in the code, input.txt, provided here, with all values in the international system of units (SI).
+
+Another input is the interval of time on which we want to model the system's movement (say one year, or 365 days) and the interval of time where we can assume that the acceleration is constant on a given object (the time step in our numerical modelling), say 1 day. These quantities should come from the command line arguments.
+
+The output should be a new file that contains for each line the number of the step (eg. 1, 2), the real time of that step (eg., one day, two days), the x and y coordinates of one body. And there should be another file for each body named after that body. With these files we can then use Excel or similar to check the shape of the trajectory, but that is outside the requirements of this assignment.
+
+We can start with just two bodies: the Sun, at coordinates (0,0), velocity (0,0), mass 2e+32 (2*10^32kg); and the Earth, at coordinates (1.5e+11,0), meaning (150 million km, 0), speed (0,3e+4), meaning (0,30km/s) and mass 6*10^24kg (check these values on Wikipedia). Newton's gravitational constant is 6.674e-11, meaning 6.674×10^-11 N*m^2/kg^2. 
+
+Note, we do not assume there is an ellipse and just plot the formula, but compute the trajectory step by step, numerically. Anyway, there is no analytical solution if there are at least three bodies.
+
+How would you go about to do it numerically, if you were doing it by hand? The computer would do it similarly, just faster. So you can tell the computer what steps to do.
+
+Then you can do it in an more effective programming way, by using the object oriented way of C++, i.e. classes. 
+
+And we should get a nice ellipse. Later we can add the Moon and see it wobble around the Earth as the Earth moves around the Sun. 
+
+Next, compute for all the planets. Maybe you found a particular solution for just the Earth and the Sun. It may not work for all the planets, or the code would become very cumbersome. To make it easier, i.e. using the same code for any number of celestial bodies, you should use classes. 
+
+The first step is to create a class called Body (celestial body), that is a snapshot at a moment in time of the position and speed of that celestial body. It has the following members and methods:
+
+members:
+std::string name
+double mass,x,y,vx,vy
+
+name and mass will never change, but x,y,vx,vy will change in time
+
+methods:
+Evolve(double dt, double a) which will change x,y,vx,vy after it evolves for a certain time interval dt by the constant acceleration a. a is determined by the sum of the gravitational forces acted by all the other bodies in our solar system divided by the mass of our body, as per the simple Newton's universal law of gravitity. The position and velocity evolved again based on Newton's simple formulas.
+x=x+vx*dt+1/2*a*dt*dt
+vx=vx+a*dt
+
+We can have also other methods, as setters, getters, print, etc, but Evolve is the key for the program.
+
+The next class is one called System (solar system) that contains the list of all of the planets. Since we do not know a priori how many planets there are, it is natural to have std::vector<Body>. Note how we can now use the new class as a new type, and we can have a vector of that type. Since each body of type Body is a snapshot of a celestial body, system of type System is a snapshot of the solar system.
+
+member:
+std::vector<Body>
+or
+std::vector<Body*>
+
+methods:
+Evolve(double dt) which will change the solar system for the time interval, ex one day. What it will do is loop over all the planets and let each of them evolve. But let's be careful, to evolve one planet, we need to use the unchanged variables. For example, when it reaches the second planet, the first planet has already been changed, but we should use the unchanged values. So we need a copy of the previous system used to evolve the current system.
+
+Then the user will say dt (one day, so 86400 seconds) and total T (like 365 days, so 86400*365) and for each step writes one line in every file, one file per planet, then evolve again, write another line. Now you can move this for loop inside its own function, or even class, say a class called Universe.
+
+member:
+std::vector<System>
+
+methods:
+Evolve(double dt, double T)
+

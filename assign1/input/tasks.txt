@@ -1,0 +1,16 @@
+1. Exercise: Read the file input2D_float.txt and for each line print the value from the first column (x value) and second column (y value). Asumming these are x and y components of a 2-D vector, compute the absolute value of the vector. Write to a new file called output2D_float.txt for each entry of the initial file three columns, the first two being the already had x and y, while the third one is the newly computed absolute value. 
+
+Notions you will learn: reading from a file, writing to a file, building a function called absolute value taking as inputs two values, each of the type float; how to use mathematical functions as square root and power two. 
+
+2. The same as in one, except use the input file input3D_float.txt, which has three values, the coordinates x, y, z. 
+
+Notions you will learn: Though you can build another function with another name,les you can and it is best practice to do so build another function with the same name (something like absolute_value), which takes this time three arguments. The fact that you are allowed to have functions with the same name while the compiler knows they are different because they have different input arguments is called overloading. Here we are doing function overloading. 
+
+3. The same as in 1, except instead of using decimal numbers of type float, use integer numbers of type unsigned. Use input2D_int.txt and input3D_int.txt.
+
+Notions you will learn: Though you all you need is to copy paste the code from above, and replace float with int, it is both tedious and a bad software practice. What happens if you found a bug in one function? Then you would have to modify in the other one, too. But maybe you forget to do so. You can and it is a good practice to do so, to build a function that can take as arguments either one type of variable (float), or the other (int). This is called templating. Here we are doing function templating. 
+
+4. Now we want to do the same thing for one of the input files, but instead of looping over all the four lines in the file, we want the user to give it from a command line argument the choice to use only a certain amount of lines, for example 2. If the user gives a number of lines smaller than 0, then the program should print an error text and then close. If the user gives a number larger than the number of lines, it should print a warning and  not crash, but simply go through all the lines and end and just before the end print a warning.
+
+Notions you learn from this: how to pass command line arguments. 
+

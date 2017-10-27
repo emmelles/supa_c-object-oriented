@@ -1,0 +1,17 @@
+The file input.txt contains a list of planets (name, mass in kg in scientific notation, average distance to the Sun in astronomic units, where 1.0 is the distance from the Earth to the sun). 
+
+1. Print on each line the name of the planets, in alphabetical order.
+2. Print on each line the name of the planet followed by its mass, in order of the mass. Same for distance to the sun. 
+3. Print the planet with the smallest and largest mass. Same for distance to the sun. 
+4. Compute the weighted average distance to the Sun of all the planets, defined as sum over the planets of mass times distance, and all divided by the sum of the masses of all planets (\frac{\Sum mi*di}{\Sum mi}). 
+
+Tips: 
+1. scientific notation, useful for large numbers:
+http://www.cplusplus.com/forum/general/9616/
+
+2. std::map<std::string, double> to store pairing between a word and a number, when iterating over a map, the items come ranked, and if they are words, that means alphabetical order.
+
+3. Use algorithms on the STL containers, like getting max and min from an std::vector<double> 
+http://stackoverflow.com/questions/10158756/using-stdmax-element-on-a-vectordouble
+
+
